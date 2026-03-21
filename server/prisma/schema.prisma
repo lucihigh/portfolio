@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Profile {
+  id               String   @id @default(cuid())
+  fullName         String
+  headline         String
+  headlineVi       String?
+  shortBio         String
+  shortBioVi       String?
+  about            String
+  aboutVi          String?
+  strengths        String[]
+  strengthsVi      String[]
+  careerGoals      String[]
+  careerGoalsVi    String[]
+  avatarUrl        String?
+  cvUrl            String?
+  email            String
+  phone            String?
+  location         String?
+  githubUrl        String?
+  linkedinUrl      String?
+  facebookUrl      String?
+  heroPrimaryLabel String   @default("View Projects")
+  heroPrimaryLabelVi String?
+  heroPrimaryHref  String   @default("#projects")
+  heroSecondaryLabel String @default("Contact Me")
+  heroSecondaryLabelVi String?
+  heroSecondaryHref  String @default("#contact")
+  isPublished      Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  name        String
+  nameVi      String?
+  category    String
+  categoryVi  String?
+  level       String?
+  levelVi     String?
+  description String?
+  descriptionVi String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Activity {
+  id          String    @id @default(cuid())
+  title       String
+  titleVi     String?
+  organization String
+  organizationVi String?
+  slug        String    @unique
+  description String
+  descriptionVi String?
+  role        String?
+  roleVi      String?
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  highlights  String[]
+  highlightsVi String[]
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  titleVi     String?
+  slug        String   @unique
+  description String
+  descriptionVi String?
+  courseScore String?
+  role        String?
+  roleVi      String?
+  imageUrl    String?
+  githubUrl   String?
+  demoUrl     String?
+  technologies String[]
+  technologiesVi String[]
+  highlights  String[]
+  highlightsVi String[]
+  sortOrder   Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CourseUnit {
+  id          String   @id @default(cuid())
+  stage       Int?
+  term        String
+  termVi      String?
+  unitCode    String   @unique
+  unitName    String
+  unitNameVi  String?
+  credits     Int      @default(15)
+  grade       String?
+  status      String   @default("Studying")
+  statusVi    String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  titleVi     String?
+  issuer      String?
+  issuerVi    String?
+  description String
+  descriptionVi String?
+  date        DateTime?
+  imageUrl    String?
+  credentialUrl String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  roleVi      String?
+  company     String?
+  companyVi   String?
+  content     String
+  contentVi   String?
+  avatarUrl   String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactLink {
+  id          String   @id @default(cuid())
+  platform    String
+  platformVi  String?
+  label       String
+  labelVi     String?
+  url         String
+  icon        String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteSetting {
+  id              String   @id @default(cuid())
+  siteTitle       String   @default("Portfolio")
+  siteTitleVi     String?
+  siteDescription String   @default("Modern fullstack portfolio")
+  siteDescriptionVi String?
+  courseShowcaseEyebrow String?
+  courseShowcaseEyebrowVi String?
+  courseShowcaseTitle String?
+  courseShowcaseTitleVi String?
+  courseShowcaseIntroTitle String?
+  courseShowcaseIntroTitleVi String?
+  courseShowcaseIntroBody1 String?
+  courseShowcaseIntroBody1Vi String?
+  courseShowcaseIntroBody2 String?
+  courseShowcaseIntroBody2Vi String?
+  courseShowcaseIntroBody3 String?
+  courseShowcaseIntroBody3Vi String?
+  faviconUrl      String?
+  footerText      String?
+  footerTextVi    String?
+  primaryColor    String?  @default("#0f172a")
+  accentColor     String?  @default("#0ea5e9")
+  enableDarkMode  Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

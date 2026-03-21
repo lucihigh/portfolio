@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Run Fullstack App",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/client",
+      "preLaunchTask": "dev:fullstack"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:server"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}
