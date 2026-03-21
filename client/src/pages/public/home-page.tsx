@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -58,6 +58,7 @@ const normalizeLookup = (value?: string | null) =>
     .trim();
 
 export const HomePage = () => {
+  const [showAllCourses, setShowAllCourses] = useState(false);
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["public-data"],
     queryFn: async () => {
@@ -122,6 +123,8 @@ export const HomePage = () => {
       return { unit, linkedProject, coverImage, technologies };
     });
   }, [data?.courseUnits, data?.projects, locale]);
+
+  const visibleCourseCards = showAllCourses ? courseCards : courseCards.slice(0, 2);
 
   if (isLoading) {
     return (
@@ -401,7 +404,7 @@ export const HomePage = () => {
           </Card>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            {courseCards.map(({ unit, linkedProject, coverImage, technologies }, index) => (
+            {visibleCourseCards.map(({ unit, linkedProject, coverImage, technologies }, index) => (
               <motion.div
                 key={unit.id}
                 initial={false}
@@ -477,6 +480,14 @@ export const HomePage = () => {
               </motion.div>
             ))}
           </div>
+
+          {courseCards.length > 2 ? (
+            <div className="mt-8 flex justify-center">
+              <Button variant="outline" onClick={() => setShowAllCourses((current) => !current)}>
+                {showAllCourses ? t("Show less") : t("Show more subjects")}
+              </Button>
+            </div>
+          ) : null}
         </Section>
 
         <Section id="achievements" eyebrow={t("Achievements")} title={t("Milestones that reflect progress, persistence, and real participation.")}>

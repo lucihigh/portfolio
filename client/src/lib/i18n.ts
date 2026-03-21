@@ -29,6 +29,8 @@ const translations: Record<string, string> = {
   "Competitions, clubs, and collaborative experiences that shaped my journey.": "Các cuộc thi, câu lạc bộ và trải nghiệm cộng tác đã định hình hành trình của tôi.",
   "Course Showcase": "Trưng bày môn học",
   "Each subject gets its own showcase card with grades, coursework details, and product links.": "Mỗi môn học có một thẻ riêng với điểm số, thông tin bài làm và liên kết sản phẩm.",
+  "Show more subjects": "Xem thêm môn học",
+  "Show less": "Thu gọn",
   "How grading works": "Cách tính điểm",
   "BTEC FPT evaluates practical performance across each unit, so results reflect assignments, project work, and applied skills instead of only theory exams.": "BTEC FPT đánh giá năng lực thực hành ở từng môn học, vì vậy kết quả phản ánh bài tập, project và khả năng áp dụng kỹ năng thay vì chỉ dựa vào thi lý thuyết.",
   "Grades are typically grouped into Pass, Merit, and Distinction, with the final classification accumulated from completed units.": "Điểm thường được chia thành Pass, Merit và Distinction, sau đó xếp loại cuối cùng được cộng dồn từ các môn đã hoàn thành.",
