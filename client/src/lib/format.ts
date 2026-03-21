@@ -60,3 +60,19 @@ export const normalizeMediaUrl = (value?: string | null) => {
 
   return trimmed;
 };
+
+export const DEFAULT_TESTIMONIAL_AVATAR =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Default profile avatar">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#9ca3af" />
+          <stop offset="100%" stop-color="#cbd5e1" />
+        </linearGradient>
+      </defs>
+      <rect width="120" height="120" rx="60" fill="url(#bg)" />
+      <circle cx="60" cy="43" r="22" fill="#ffffff" />
+      <path d="M23 103c4-22 21-34 37-34s33 12 37 34" fill="#ffffff" />
+    </svg>
+  `);

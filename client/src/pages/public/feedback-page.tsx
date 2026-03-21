@@ -97,6 +97,7 @@ export const FeedbackPage = () => {
           <div className="mt-8 space-y-4 text-sm leading-7 text-slate-300">
             <p>{t("Use this page for lecturer feedback, teammate reviews, mentor endorsements, or collaboration notes.")}</p>
             <p>{t("You can paste an avatar image URL if you want your feedback card to include your photo.")}</p>
+            <p>{t("If you leave the image field empty, a clean default profile avatar will be used automatically.")}</p>
             <p>
               {t("Prefer to review the site first? ")}
               <Link to="/" className="text-cyan-300 underline">

@@ -23,7 +23,7 @@ import { LanguageToggle } from "../../components/ui/language-toggle";
 import { ThemeToggle } from "../../components/ui/theme-toggle";
 import { useLocale } from "../../contexts/locale-context";
 import { useThemeMode } from "../../hooks/use-theme-mode";
-import { formatDate, normalizeMediaUrl } from "../../lib/format";
+import { DEFAULT_TESTIMONIAL_AVATAR, formatDate, normalizeMediaUrl } from "../../lib/format";
 import { localizeList, localizeText } from "../../lib/localized";
 
 const iconMap = {
@@ -126,11 +126,31 @@ export const HomePage = () => {
   if (isLoading) {
     return (
       <div className="container-shell flex min-h-screen items-center justify-center">
-        <Card className="w-full max-w-lg text-center">
-          <p className="text-sm uppercase tracking-[0.24em] text-teal-600">{t("Loading")}</p>
+        <Card className="w-full max-w-xl overflow-hidden text-center">
+          <div className="relative">
+            <motion.div
+              className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent"
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: "linear" }}
+            />
+            <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-cyan-200/60 bg-cyan-50/80 px-4 py-2 dark:border-cyan-400/20 dark:bg-cyan-400/10">
+              {[0, 1, 2].map((index) => (
+                <motion.span
+                  key={index}
+                  className="h-2.5 w-2.5 rounded-full bg-cyan-500"
+                  animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.15, 0.9] }}
+                  transition={{ repeat: Infinity, duration: 1.2, delay: index * 0.16, ease: "easeInOut" }}
+                />
+              ))}
+            </div>
+          </div>
+          <p className="mt-6 text-sm uppercase tracking-[0.24em] text-teal-600">{t("Loading")}</p>
           <h1 className="mt-3 font-display text-3xl font-bold text-slate-950 dark:text-white">
-            {t("Preparing portfolio experience...")}
+            {t("Preparing your portfolio experience...")}
           </h1>
+          <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-slate-600 dark:text-slate-300">
+            {t("This website is publicly hosted on Render, so the first request may take up to 1 minute while the server wakes up.")}
+          </p>
         </Card>
       </div>
     );
@@ -491,9 +511,13 @@ export const HomePage = () => {
                 </p>
                 <div className="mt-6 flex items-center gap-4">
                   <img
-                    src={normalizeMediaUrl(testimonial.avatarUrl) || "https://via.placeholder.com/80"}
+                    src={normalizeMediaUrl(testimonial.avatarUrl) || DEFAULT_TESTIMONIAL_AVATAR}
                     alt={testimonial.name}
                     className="h-12 w-12 rounded-full object-cover"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = DEFAULT_TESTIMONIAL_AVATAR;
+                    }}
                   />
                   <div>
                     <p className="font-semibold text-slate-900 dark:text-white">{testimonial.name}</p>
