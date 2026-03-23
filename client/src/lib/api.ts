@@ -1,13 +1,16 @@
 import axios from "axios";
 
 const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const REQUEST_TIMEOUT_MS = 20000;
 
 export const publicApi = axios.create({
-  baseURL
+  baseURL,
+  timeout: REQUEST_TIMEOUT_MS
 });
 
 export const adminApi = axios.create({
-  baseURL
+  baseURL,
+  timeout: REQUEST_TIMEOUT_MS
 });
 
 adminApi.interceptors.request.use((config) => {

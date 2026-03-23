@@ -259,7 +259,13 @@ npm install && npm run prisma:generate && npm run build
 - Start command:
 
 ```bash
-npm run prisma:migrate:deploy && npm run seed && npm run start
+npm run start
+```
+
+- Pre-deploy command:
+
+```bash
+npm run prisma:migrate:deploy && npm run seed
 ```
 
 Environment variables:
@@ -362,4 +368,3 @@ npm run seed
 - Client build: passed
 - Server build: passed
 - Prisma migration: included in `server/prisma/migrations/0001_init`
-

@@ -64,7 +64,9 @@ export const HomePage = () => {
     queryFn: async () => {
       const response = await publicApi.get<{ data: PublicData }>("/public");
       return response.data.data;
-    }
+    },
+    retry: 1,
+    retryDelay: 3000
   });
 
   const { darkMode, toggleTheme } = useThemeMode();
@@ -172,8 +174,7 @@ export const HomePage = () => {
             {t("The portfolio server is not responding yet.")}
           </h1>
           <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
-            {t("Start the backend at")} <span className="font-semibold">http://localhost:5000</span>,{" "}
-            {t("Try again").toLowerCase()}.
+            {t("If you are using Render free services, the backend or database may still be waking up. Wait a bit, then try again.")}
           </p>
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{message}</p>
           <div className="mt-6 flex justify-center gap-3">
