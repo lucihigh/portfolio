@@ -1,10 +1,11 @@
+import { ChangeEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Star } from "lucide-react";
+import { ArrowLeft, ImagePlus, LoaderCircle, Send, Star, Upload } from "lucide-react";
 import { publicApi } from "../../lib/api";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
@@ -29,10 +30,14 @@ type FormValues = z.infer<typeof schema>;
 export const FeedbackPage = () => {
   const { darkMode, toggleTheme } = useThemeMode();
   const { locale, toggleLocale, t } = useLocale();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors }
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -42,6 +47,31 @@ export const FeedbackPage = () => {
       company: "",
       content: "",
       avatarUrl: ""
+    }
+  });
+
+  const avatarField = register("avatarUrl");
+  const avatarUrl = watch("avatarUrl");
+
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const response = await publicApi.post("/public/avatar-upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      return response.data.data.url as string;
+    },
+    onSuccess: (url) => {
+      setValue("avatarUrl", url, { shouldDirty: true, shouldValidate: true });
+      toast.success(locale === "vi" ? "Tai anh len thanh cong." : "Avatar uploaded successfully.");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || (locale === "vi" ? "Khong the tai anh len." : "Could not upload image."));
     }
   });
 
@@ -57,11 +87,33 @@ export const FeedbackPage = () => {
     onSuccess: () => {
       toast.success(t("Your feedback has been saved and is now visible on the website."));
       reset();
+      setSelectedFileName("");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || t("Could not submit feedback"));
     }
   });
+
+  const handleChooseAvatar = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarPicked = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setSelectedFileName(file.name);
+    await uploadMutation.mutateAsync(file);
+    event.target.value = "";
+  };
+
+  const avatarHint = selectedFileName
+    ? locale === "vi"
+      ? `Anh da chon: ${selectedFileName}`
+      : `Selected image: ${selectedFileName}`
+    : locale === "vi"
+      ? "Co the dan URL hoac bam nut de tai anh truc tiep tu dien thoai hay may tinh."
+      : "Paste an image URL or upload directly from your phone or computer.";
 
   return (
     <div className="container-shell py-10 lg:py-16">
@@ -117,7 +169,7 @@ export const FeedbackPage = () => {
               <FormField label={t("Role / title")} error={errors.role?.message ? t(errors.role.message) : undefined}>
                 <Input
                   {...register("role")}
-                  placeholder={locale === "vi" ? "Giảng viên, Mentor, Đồng đội..." : "Lecturer, Mentor, Teammate..."}
+                  placeholder={locale === "vi" ? "Giang vien, Mentor, Dong doi..." : "Lecturer, Mentor, Teammate..."}
                 />
               </FormField>
             </div>
@@ -125,28 +177,83 @@ export const FeedbackPage = () => {
             <FormField label={t("Organization / company")}>
               <Input
                 {...register("company")}
-                placeholder={locale === "vi" ? "Trường học, câu lạc bộ, công ty..." : "University, club, company..."}
+                placeholder={locale === "vi" ? "Truong hoc, cau lac bo, cong ty..." : "University, club, company..."}
               />
             </FormField>
 
-            <FormField label={t("Avatar URL")}>
-              <Input {...register("avatarUrl")} placeholder={locale === "vi" ? "URL ảnh tùy chọn" : "Optional image URL"} />
+            <FormField
+              label={t("Avatar URL")}
+              error={errors.avatarUrl?.message ? t(errors.avatarUrl.message) : undefined}
+              hint={avatarHint}
+            >
+              <div className="space-y-3">
+                <Input
+                  {...avatarField}
+                  value={avatarUrl}
+                  placeholder={locale === "vi" ? "URL anh tuy chon" : "Optional image URL"}
+                  onChange={(event) => {
+                    avatarField.onChange(event);
+                    if (!event.target.value) {
+                      setSelectedFileName("");
+                    }
+                  }}
+                />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  className="hidden"
+                  onChange={handleAvatarPicked}
+                />
+                <div className="flex flex-wrap gap-3">
+                  <Button type="button" variant="outline" onClick={handleChooseAvatar} disabled={uploadMutation.isPending}>
+                    <ImagePlus className="mr-2 h-4 w-4" />
+                    {locale === "vi" ? "Chon anh" : "Choose image"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleChooseAvatar}
+                    disabled={uploadMutation.isPending}
+                    className="border-[3px] border-dashed border-slate-300 dark:border-slate-700"
+                  >
+                    {uploadMutation.isPending ? (
+                      <>
+                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                        {locale === "vi" ? "Dang tai anh..." : "Uploading image..."}
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        {locale === "vi" ? "Tai anh tu may" : "Upload from device"}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
             </FormField>
 
             <FormField label={t("Your evaluation")} error={errors.content?.message ? t(errors.content.message) : undefined}>
               <Textarea
                 {...register("content")}
-                placeholder={t("Write a short testimonial about working, learning, or collaborating with Lê Danh Đạt...")}
+                placeholder={t("Write a short testimonial about working, learning, or collaborating with LÃª Danh Äáº¡t...")}
                 className="min-h-40"
               />
             </FormField>
 
             <div className="flex flex-wrap gap-3">
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button type="submit" disabled={mutation.isPending || uploadMutation.isPending}>
                 <Send className="mr-2 h-4 w-4" />
                 {mutation.isPending ? t("Saving...") : t("Save feedback")}
               </Button>
-              <Button type="button" variant="outline" onClick={() => reset()}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  reset();
+                  setSelectedFileName("");
+                }}
+              >
                 {t("Clear form")}
               </Button>
             </div>
