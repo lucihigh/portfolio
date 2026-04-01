@@ -517,8 +517,8 @@ export const HomePage = () => {
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {testimonials.map((testimonial) => (
-              <Card key={testimonial.id}>
-                <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
+              <Card key={testimonial.id} className="flex h-full flex-col">
+                <p className="flex-1 text-sm leading-7 text-slate-600 dark:text-slate-300">
                   "{localizeText(locale, testimonial.content, testimonial.contentVi)}"
                 </p>
                 <div className="mt-6 flex items-center gap-4">
