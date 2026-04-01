@@ -14,7 +14,7 @@ services:
           name: portfolio-db
           property: connectionString
       - key: CLIENT_URL
-        value: https://portfolio-client.onrender.com
+        value: https://ledanhdat.online
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
@@ -32,7 +32,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://portfolio-api.onrender.com/api
+        value: https://api.ledanhdat.online/api
     routes:
       - type: rewrite
         source: /*

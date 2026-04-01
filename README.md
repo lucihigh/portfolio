@@ -310,6 +310,7 @@ Static site rewrite rule:
 - Set `VITE_API_URL` on the frontend to your real backend API domain.
 - Use a strong random `JWT_SECRET`.
 - Change `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
+- Do not commit real secrets from `server/.env` or `render.backend.env`.
 - Because uploaded files are URL-based, no local file storage is required.
 
 ## Build commands summary
@@ -342,6 +343,8 @@ npm run dev:client
 npm run build
 npm run seed
 npm run prisma:generate
+npm run backup:data
+npm run restore:data -- ../backups/portfolio-data.latest.json
 ```
 
 Server:
@@ -354,7 +357,37 @@ npm run prisma:generate
 npm run prisma:migrate:dev
 npm run prisma:migrate:deploy
 npm run seed
+npm run backup:data
+npm run restore:data -- ../backups/portfolio-data.latest.json
 ```
+
+## Backup and restore current portfolio data
+
+Export the current PostgreSQL content before redeploying:
+
+```bash
+cd server
+npm run backup:data
+```
+
+Default output:
+
+```text
+server/backups/portfolio-data.latest.json
+```
+
+Restore that exact content later with:
+
+```bash
+cd server
+npm run restore:data -- ../backups/portfolio-data.latest.json
+```
+
+Notes:
+
+- `backup:data` exports all portfolio tables to JSON.
+- `restore:data` replaces the current database content with the backup file.
+- Keep backup files private because they may contain unpublished content or account metadata.
 
 ## Notes for customization
 
