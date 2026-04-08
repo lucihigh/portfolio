@@ -43,6 +43,65 @@ async function main() {
     prisma.siteSetting.count()
   ]);
 
+  await prisma.activity.upsert({
+    where: { slug: "fpt-polytechnic-media-production-assistant" },
+    update: {
+      title: "Media Production Assistant",
+      titleVi: "Nhân sự media bán thời gian",
+      organization: "FPT Polytechnic",
+      organizationVi: "FPT Polytechnic",
+      description:
+        "Worked in the media team for 8 months, handling videography, photography, and content production support for campus communication activities and events. This role helped build discipline, adaptability, cross-team collaboration, and a more professional mindset in an office environment.",
+      descriptionVi:
+        "Làm việc tại bộ phận media trong 8 tháng, phụ trách quay phim, chụp ảnh và hỗ trợ sản xuất nội dung cho các hoạt động truyền thông và sự kiện của trường. Công việc này giúp tôi rèn luyện tính kỷ luật, khả năng thích nghi với môi trường công sở, phối hợp với nhiều bộ phận và xây dựng tác phong làm việc chuyên nghiệp hơn.",
+      role: "Videography, Photography & Media Support",
+      roleVi: "Quay phim, chụp ảnh và hỗ trợ media",
+      startDate: new Date("2024-07-01T00:00:00.000Z"),
+      endDate: new Date("2025-02-28T00:00:00.000Z"),
+      location: "Ha Noi, Vietnam",
+      highlights: [
+        "Produced photo and video content for school activities",
+        "Learned office workflow and deadline discipline",
+        "Strengthened communication and adaptability in a real workplace"
+      ],
+      highlightsVi: [
+        "Tham gia quay chụp và sản xuất nội dung cho các hoạt động của trường",
+        "Học được quy trình công việc công sở, cách làm việc đúng deadline và phối hợp nhiều bộ phận",
+        "Cải thiện khả năng giao tiếp, tinh thần trách nhiệm và sự thích nghi trong môi trường làm việc thực tế"
+      ],
+      sortOrder: 1,
+      isPublished: true
+    },
+    create: {
+      title: "Media Production Assistant",
+      titleVi: "Nhân sự media bán thời gian",
+      organization: "FPT Polytechnic",
+      organizationVi: "FPT Polytechnic",
+      slug: "fpt-polytechnic-media-production-assistant",
+      description:
+        "Worked in the media team for 8 months, handling videography, photography, and content production support for campus communication activities and events. This role helped build discipline, adaptability, cross-team collaboration, and a more professional mindset in an office environment.",
+      descriptionVi:
+        "Làm việc tại bộ phận media trong 8 tháng, phụ trách quay phim, chụp ảnh và hỗ trợ sản xuất nội dung cho các hoạt động truyền thông và sự kiện của trường. Công việc này giúp tôi rèn luyện tính kỷ luật, khả năng thích nghi với môi trường công sở, phối hợp với nhiều bộ phận và xây dựng tác phong làm việc chuyên nghiệp hơn.",
+      role: "Videography, Photography & Media Support",
+      roleVi: "Quay phim, chụp ảnh và hỗ trợ media",
+      startDate: new Date("2024-07-01T00:00:00.000Z"),
+      endDate: new Date("2025-02-28T00:00:00.000Z"),
+      location: "Ha Noi, Vietnam",
+      highlights: [
+        "Produced photo and video content for school activities",
+        "Learned office workflow and deadline discipline",
+        "Strengthened communication and adaptability in a real workplace"
+      ],
+      highlightsVi: [
+        "Tham gia quay chụp và sản xuất nội dung cho các hoạt động của trường",
+        "Học được quy trình công việc công sở, cách làm việc đúng deadline và phối hợp nhiều bộ phận",
+        "Cải thiện khả năng giao tiếp, tinh thần trách nhiệm và sự thích nghi trong môi trường làm việc thực tế"
+      ],
+      sortOrder: 1,
+      isPublished: true
+    }
+  });
+
   if (profileCount === 0) {
     await prisma.profile.create({
       data: {
