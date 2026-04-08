@@ -2,8 +2,8 @@ import { app } from "./app.js";
 import { env } from "./config/env.js";
 import { prisma } from "./lib/prisma.js";
 
-const server = app.listen(env.PORT, () => {
-  console.log(`Server is running on port ${env.PORT}`);
+const server = app.listen(env.PORT, env.HOST, () => {
+  console.log(`Server is running on http://${env.HOST}:${env.PORT}`);
 });
 
 const shutdown = async () => {

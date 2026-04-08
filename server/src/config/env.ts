@@ -5,6 +5,7 @@ dotenv.config();
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  HOST: z.string().min(1).default("127.0.0.1"),
   PORT: z.coerce.number().default(5000),
   DATABASE_URL: z.string().min(1),
   JWT_SECRET: z.string().min(10),
@@ -16,6 +17,7 @@ const envSchema = z.object({
 
 const parsed = envSchema.safeParse({
   NODE_ENV: process.env.NODE_ENV,
+  HOST: process.env.HOST,
   PORT: process.env.SERVER_PORT ?? process.env.PORT,
   DATABASE_URL: process.env.DATABASE_URL,
   JWT_SECRET: process.env.JWT_SECRET,

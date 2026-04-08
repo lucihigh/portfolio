@@ -7,6 +7,7 @@ This guide assumes:
 - Project path on server: `/var/www/ledanhdat`
 - Backend runs on `127.0.0.1:5000`
 - Nginx serves the frontend and proxies `/api`
+- Only ports `80/443` are public; do not expose backend port `5000`
 
 ## 1. Install base packages
 
@@ -16,6 +17,9 @@ sudo apt install -y nginx postgresql postgresql-contrib
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -g pm2
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw --force enable
 ```
 
 Check versions:
@@ -73,17 +77,26 @@ GRANT ALL PRIVILEGES ON DATABASE portfolio_db TO portfolio_user;
 
 ```bash
 cd /var/www/ledanhdat
-cp server/.env.vps.example server/.env
+cp .env.example server/.env
 nano server/.env
 ```
 
 Set at least:
 
+- `HOST=127.0.0.1`
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `CLIENT_URL=https://ledanhdat.online`
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
+
+Create the frontend production env so the browser always talks to Nginx instead of a raw backend port:
+
+```bash
+cat > client/.env.production <<'EOF'
+VITE_API_URL=/api
+EOF
+```
 
 ## 5. Install dependencies and build
 
@@ -121,14 +134,17 @@ npm run restore:data -- ../backups/portfolio-data.latest.json
 cd /var/www/ledanhdat
 pm2 start deploy/vps/ecosystem.config.cjs
 pm2 save
-pm2 startup
+pm2 startup systemd -u $USER --hp $HOME
 ```
+
+Run the command printed by `pm2 startup` with `sudo` so PM2 restarts automatically after reboot.
 
 Check:
 
 ```bash
 pm2 status
 curl http://127.0.0.1:5000/health
+ss -ltnp | grep 5000
 ```
 
 ## 8. Configure Nginx
@@ -141,6 +157,13 @@ sudo ln -s /etc/nginx/sites-available/ledanhdat.online.conf /etc/nginx/sites-ena
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl reload nginx
+```
+
+Confirm only Nginx is public:
+
+```bash
+sudo ufw status
+ss -ltnp | grep -E ':80|:443|:5000'
 ```
 
 ## 9. Point DNS
@@ -166,6 +189,9 @@ After new code changes:
 
 ```bash
 cd /var/www/ledanhdat
+cat > client/.env.production <<'EOF'
+VITE_API_URL=/api
+EOF
 npm install
 npm run build
 pm2 restart portfolio-api
