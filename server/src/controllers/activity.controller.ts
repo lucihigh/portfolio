@@ -1,10 +1,30 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 
+const toOptionalString = (value: unknown) => {
+  if (typeof value !== "string") return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+};
+
 const toActivityData = (body: Request["body"]) => ({
-  ...body,
+  title: body.title,
+  titleVi: toOptionalString(body.titleVi),
+  organization: body.organization,
+  organizationVi: toOptionalString(body.organizationVi),
+  slug: body.slug,
+  description: body.description,
+  descriptionVi: toOptionalString(body.descriptionVi),
+  role: toOptionalString(body.role),
+  roleVi: toOptionalString(body.roleVi),
   startDate: new Date(body.startDate),
-  endDate: body.endDate ? new Date(body.endDate) : null
+  endDate: body.endDate ? new Date(body.endDate) : null,
+  location: toOptionalString(body.location),
+  highlights: Array.isArray(body.highlights) ? body.highlights : [],
+  highlightsVi: Array.isArray(body.highlightsVi) ? body.highlightsVi : [],
+  imageUrl: toOptionalString(body.imageUrl),
+  sortOrder: body.sortOrder,
+  isPublished: body.isPublished
 });
 
 export const listActivities = async (_req: Request, res: Response) => {
